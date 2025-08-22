@@ -1,0 +1,96 @@
+-> to install first search in google : redis windows git install , click on the first link and then download the msi file (also zip can download)
+
+-> after sucessfull install then go to c/programfile/redis and run redis cli . in the cli for testing purpose write: set productname apple , it will give ok
+
+-> now if i do now: get productname
+"apple" (return data)
+
+-> copy the redis path C:\Program Files\Redis to the environment variable
+
+-> now check the redis server. go to the cmd and type redis-server . then i got ping
+
+-> full form of redis : remote dictionary server
+
+-> redis is a in memory db. in memory means it will basically store data in memory or ram instead of disk. so data read , write is very fast. 
+
+-> install redis in project : npm i redis
+
+-> create a client : go to server.js and type
+
+import redis from "redis";
+const client = redis.createClient({
+  host: "localhost",
+  port: 6379,
+});
+
+here the client will be use to interact with the redis server. and host: "localhost" means the redis-server is now hosted on the localhost(local machine) port should be install time port
+
+-> error event listener:
+// event listeners
+client.on("error", (error) =>
+  console.log("Redis client error occured!", error)
+);
+
+-> test redis connection:
+const testRedisConnection = async () => {
+  try {
+    client.connect();
+    console.log("Redis client connected successfully!");
+  } catch (error) {
+    console.log("Error connecting to Redis client:", error);
+  } finally {
+    client.quit(); // Ensure any open connections are closed
+  }
+};
+
+testRedisConnection();
+
+-> set and get in redis : 
+const testRedisConnection = async () => {
+  try {
+    client.connect();
+    console.log("Redis client connected successfully!");
+
+    await client.set("name", "Sabbir");
+    const extractName = await client.get("name");
+    console.log("Extracted name from Redis:", extractName);
+  } catch (error) {
+    console.log("Error connecting to Redis client:", error);
+  } finally {
+    client.quit(); // Ensure any open connections are closed
+  }
+};
+
+testRedisConnection();
+
+
+-> various methods used : 
+const testRedisConnection = async () => {
+  try {
+    client.connect();
+    console.log("Redis client connected successfully!");
+
+    await client.set("name", "Sabbir");
+    const extractName = await client.get("name");
+    console.log("Extracted name from Redis:", extractName);
+
+    const delCount = await client.del("name"); //delete keys and  returns number of keys deleted
+    console.log(delCount);
+
+    const extractNameAfterDel = await client.get("name");
+    console.log(extractNameAfterDel); // should be null after deletion
+
+    await client.set("count", "100");
+    const incrementCount = await client.incr("count");
+    console.log(incrementCount);
+
+    const decrementCount = await client.decr("count");
+    console.log(decrementCount);
+  } catch (error) {
+    console.log("Error connecting to Redis client:", error);
+  } finally {
+    client.quit(); // Ensure any open connections are closed
+  }
+};
+
+testRedisConnection();
